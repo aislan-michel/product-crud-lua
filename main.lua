@@ -1,22 +1,45 @@
 local function isEmptyOrWhiteSpace(s)
-    return s == nil or s == '' or s == ' '
-end;
+    return s == nil or s == '' or s == ' ';
+end
+
+local function options()
+    print("1 - Create");
+    print("2 - Read");
+    print("3 - Update");
+    print("4 - Delete");
+    print("0 - Quit");
+    print("Type number of option: ");
+end
 
 local function newProduct(name, price)
-    local self = {name, price};
+    local self = { name, price };
 
-    local isValid = function (v)
-                        if isEmptyOrWhiteSpace(name) then
-                            print("Nome do produto inválido");
-                            return;
+    local validation = {
+        messages = {},
+        validate = function()
+            if isEmptyOrWhiteSpace(name) then
+                messages[1] = "Name is invalid";
+            end
+        end,
+        isValid = function()
+            if messages == nil or #messages <= 0 then
+                return true;
+            end
+            return false;
+        end
+    }
+
+    local toString = function ()
+                        if validation.isValid() then
+                            return  "Product " .. name .. " cost $" .. tostring(price);
                         end
-
-                        print("O produto " .. name .. " custa R$" .. tostring(price));
-                    end
+                        return "";
+                     end
 
     return {
         self = self,
-        isValid = isValid
+        validation = validation,
+        toString = toString
     }
 end
 
@@ -24,19 +47,13 @@ local products = {};
 local option = nil;
 
 print("Welcome! What do you want to do?");
-print("1 - Create");
-print("2 - Read");
-print("3 - Update");
-print("4 - Delete");
-print("0 - Quit");
-print("Type number of option: ");
+options();
 option = tonumber(io.read());
 
 while option > 0 do
     if option == 1 then
-        local name = "";
         print("Product name: ");
-        name = io.read();
+        local name = io.read();
 
         local price = 0.0;
         print("Product price: ");
@@ -44,22 +61,26 @@ while option > 0 do
 
         local product = newProduct(name, price);
 
-        product.isValid();
+        product.validation.validate();
 
-        products[0] = product;
+        if product.validation.isValid() then
+            table.insert(products, product);
+        else
+            for i = 1, #product.validation.messages do
+                print(product.validation.messages[i]);
+            end
+        end
     elseif option == 2 then
-        for i=1, 5 do
-            print(products[i])
+        if #products == 0 then
+            print("you don't have products");
+        else
+            print("Products: \n")
+            for i = 1, #products do
+                print(products[i].toString())
+            end
         end
     end
 
-    print("\n1 - Create");
-    print("2 - Read");
-    print("3 - Update");
-    print("4 - Delete");
-    print("0 - Quit");
-    print("Type number of option: ");
+    options();
     option = tonumber(io.read());
 end
-
-
