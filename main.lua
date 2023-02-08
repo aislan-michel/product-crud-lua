@@ -1,86 +1,100 @@
-local function isEmptyOrWhiteSpace(s)
-    return s == nil or s == '' or s == ' ';
+dofile("Product.lua");
+
+local function printLines(count)
+    if count == nil then
+        count = 25
+    end
+
+    for i = 1, count do
+        print("")
+    end
 end
 
+local products = {}
+local option = nil
 local function options()
-    print("1 - Create");
-    print("2 - Read");
-    print("3 - Update");
-    print("4 - Delete");
-    print("0 - Quit");
-    print("Type number of option: ");
+    print("1 - Create")
+    print("2 - Read")
+    print("3 - Update")
+    print("4 - Delete")
+    print("0 - Quit")
+    print("Type number of option: ")
 end
 
-local function newProduct(name, price)
-    local self = { name, price };
-
-    local validation = {
-        messages = {},
-        validate = function()
-            if isEmptyOrWhiteSpace(name) then
-                messages[1] = "Name is invalid";
-            end
-        end,
-        isValid = function()
-            if messages == nil or #messages <= 0 then
-                return true;
-            end
-            return false;
-        end
-    }
-
-    local toString = function ()
-                        if validation.isValid() then
-                            return  "Product " .. name .. " cost $" .. tostring(price);
-                        end
-                        return "";
-                     end
-
-    return {
-        self = self,
-        validation = validation,
-        toString = toString
-    }
-end
-
-local products = {};
-local option = nil;
-
-print("Welcome! What do you want to do?");
-options();
-option = tonumber(io.read());
+print("Welcome! What do you want to do?")
+options()
+option = tonumber(io.read())
 
 while option > 0 do
     if option == 1 then
-        print("Product name: ");
-        local name = io.read();
+        printLines()
 
-        local price = 0.0;
-        print("Product price: ");
-        price = io.read();
+        print("Product name: ")
+        local name = io.read()
 
-        local product = newProduct(name, price);
+        print("Product price: ")
+        local price = io.read()
 
-        product.validation.validate();
+        local product = Product:new(name, price)
 
-        if product.validation.isValid() then
-            table.insert(products, product);
+        product:validate()
+
+        if product:isValid() then
+            table.insert(products, product)
+            printLines()
+            print(product:toString() .. "\n")
         else
-            for i = 1, #product.validation.messages do
-                print(product.validation.messages[i]);
+            printLines()
+            for i = 1, #product:getNotifications() do
+                print(product:getNotification(i))
             end
+            printLines(1)
         end
     elseif option == 2 then
+        printLines()
         if #products == 0 then
-            print("you don't have products");
+            print("you don't have products\n")
         else
             print("Products: \n")
             for i = 1, #products do
-                print(products[i].toString())
+                print(products[i]:toString())
             end
         end
+
+        print("")
+    elseif option == 3 then
+        printLines()
+        print("Product Id")
+        local id = io.read()
+
+        local productToUpdate = nil
+        local indexOfProductToUpdate = nil
+
+        for i = 1, #products do
+            if products[i]:getId() == id then
+                productToUpdate = products[i]:toString()
+                indexOfProductToUpdate = i
+            end
+        end
+
+        printLines()
+
+        if productToUpdate == nil then
+            print("not found")
+        else
+            print(productToUpdate)
+            print("New product name")
+            local name = io.read()
+
+            print("New product price")
+            local price = io.read()
+
+            products[indexOfProductToUpdate]:update(name, price)
+        end
+
+        printLines(1)
     end
 
-    options();
-    option = tonumber(io.read());
+    options()
+    option = tonumber(io.read())
 end
