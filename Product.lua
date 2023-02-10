@@ -56,11 +56,16 @@ function Product:getNotification(index)
     return self.notifications[index]
 end
 
+function Product:printNotifications()
+    for i = 1, #self.notifications do
+        print(self.notifications[i])
+    end
+end
+
 function Product:getId()
     return self.id
 end
 
-function Product:update(name, price)
-    self.name = name
+function Product:update(price)
     self.price = price
 end

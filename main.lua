@@ -1,33 +1,16 @@
 dofile("Product.lua");
-
-local function printLines(count)
-    if count == nil then
-        count = 25
-    end
-
-    for i = 1, count do
-        print("")
-    end
-end
+dofile("PrintLines.lua")
+dofile("Options.lua")
 
 local products = {}
 local option = nil
-local function options()
-    print("1 - Create")
-    print("2 - Read")
-    print("3 - Update")
-    print("4 - Delete")
-    print("0 - Quit")
-    print("Type number of option: ")
-end
 
 print("Welcome! What do you want to do?")
-options()
-option = tonumber(io.read())
+option = Options()
 
 while option > 0 do
     if option == 1 then
-        printLines()
+        PrintLines()
 
         print("Product name: ")
         local name = io.read()
@@ -41,19 +24,17 @@ while option > 0 do
 
         if product:isValid() then
             table.insert(products, product)
-            printLines()
+            PrintLines()
             print(product:toString() .. "\n")
         else
-            printLines()
-            for i = 1, #product:getNotifications() do
-                print(product:getNotification(i))
-            end
-            printLines(1)
+            PrintLines()
+            product:printNotifications()
+            PrintLines(1)
         end
     elseif option == 2 then
-        printLines()
+        PrintLines()
         if #products == 0 then
-            print("you don't have products\n")
+            print("you don't have products")
         else
             print("Products: \n")
             for i = 1, #products do
@@ -63,7 +44,7 @@ while option > 0 do
 
         print("")
     elseif option == 3 then
-        printLines()
+        PrintLines()
         print("Product Id")
         local id = io.read()
 
@@ -77,24 +58,50 @@ while option > 0 do
             end
         end
 
-        printLines()
+        PrintLines()
 
         if productToUpdate == nil then
             print("not found")
         else
             print(productToUpdate)
-            print("New product name")
-            local name = io.read()
 
             print("New product price")
             local price = io.read()
 
-            products[indexOfProductToUpdate]:update(name, price)
+            products[indexOfProductToUpdate]:update(price)
         end
 
-        printLines(1)
+        PrintLines(1)
+    elseif option == 4 then
+        PrintLines()
+        print("Product Id")
+        local id = io.read()
+
+        local productToDelete = nil
+        local indexOfProductToDelete = nil
+
+        for i = 1, #products do
+            if products[i]:getId() == id then
+                productToDelete = products[i]:toString()
+                indexOfProductToDelete = i
+            end
+        end
+
+        PrintLines()
+
+        if productToDelete == nil then
+            print("not found")
+        else
+            table.remove(products, indexOfProductToDelete)
+
+            print(productToDelete .. " - deleted with success")
+        end
+
+        PrintLines(1)
+    else
+        PrintLines()
+        print("invalid option")
     end
 
-    options()
-    option = tonumber(io.read())
+    option = Options()
 end
