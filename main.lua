@@ -1,16 +1,18 @@
-dofile("Product.lua");
-dofile("PrintLines.lua")
-dofile("Options.lua")
+dofile("domain/Product.lua")
+dofile("application/printLines.lua")
+local options = require"application.options"
+local console = require"application.console"
 
 local products = {}
 local option = nil
 
 print("Welcome! What do you want to do?")
-option = Options()
+options.printOptions();
+option = options.getOption();
 
 while option > 0 do
     if option == 1 then
-        PrintLines()
+        printLines()
 
         print("Product name: ")
         local name = io.read()
@@ -24,15 +26,15 @@ while option > 0 do
 
         if product:isValid() then
             table.insert(products, product)
-            PrintLines()
+            printLines()
             print(product:toString() .. "\n")
         else
-            PrintLines()
+            printLines()
             product:printNotifications()
-            PrintLines(1)
+            printLines(1)
         end
     elseif option == 2 then
-        PrintLines()
+        printLines()
         if #products == 0 then
             print("you don't have products")
         else
@@ -44,7 +46,7 @@ while option > 0 do
 
         print("")
     elseif option == 3 then
-        PrintLines()
+        printLines()
         print("Product Id")
         local id = io.read()
 
@@ -58,7 +60,7 @@ while option > 0 do
             end
         end
 
-        PrintLines()
+        printLines()
 
         if productToUpdate == nil then
             print("not found")
@@ -71,9 +73,9 @@ while option > 0 do
             products[indexOfProductToUpdate]:update(price)
         end
 
-        PrintLines(1)
+        printLines(1)
     elseif option == 4 then
-        PrintLines()
+        printLines()
         print("Product Id")
         local id = io.read()
 
@@ -87,7 +89,7 @@ while option > 0 do
             end
         end
 
-        PrintLines()
+        printLines()
 
         if productToDelete == nil then
             print("not found")
@@ -97,11 +99,12 @@ while option > 0 do
             print(productToDelete .. " - deleted with success")
         end
 
-        PrintLines(1)
+        printLines(1)
     else
-        PrintLines()
+        printLines()
         print("invalid option")
     end
 
-    option = Options()
+    options.printOptions();
+    option = options.getOption();
 end
