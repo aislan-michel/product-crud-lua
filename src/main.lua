@@ -26,9 +26,8 @@ while option > 0 do
         selectedCommand:execute(products)
     else
         printLines()
-        print("invalid option")
+        print("invalid option \n")
     end
-    print("Welcome! What do you want to do?")
     print("1 - Create")
     print("2 - Read")
     print("3 - Update")

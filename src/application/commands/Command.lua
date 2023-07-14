@@ -1,4 +1,4 @@
-dofile("application/printLines.lua")
+dofile("application/utils/printLines.lua")
 local Command = {}
 
 function Command:new()
