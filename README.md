@@ -12,8 +12,6 @@ Is a object with id, name and price.
 * Create - The id is generated of the system, name and price a user insert
 * Read - Print a list of created products in this template: {{id}} - {{{name}}} - ${{price}}
 * Update - User insert id of product, the system finded, show template of information and user can update the price. if system not found product, print "not found".
-* Delete - 
-
-### Observasions
+* Delete -  User insert id of product, the system finded and deleted. if system not found product, print "not found".
 
 
